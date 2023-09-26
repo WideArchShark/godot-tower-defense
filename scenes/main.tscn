@@ -1,13 +1,13 @@
 [gd_scene load_steps=6 format=3 uid="uid://72lu3y2bauhu"]
 
-[ext_resource type="Script" path="res://scenes/main.gd" id="1_4vrq5"]
+[ext_resource type="Script" path="res://scripts/main.gd" id="1_v46vx"]
 [ext_resource type="PackedScene" uid="uid://c6gxxdpkt0iev" path="res://assets/tile_endRoundSpawn.glb" id="2_mcfgm"]
 [ext_resource type="PackedScene" uid="uid://cfmwnsfmblns3" path="res://assets/tile.glb" id="2_n410b"]
 [ext_resource type="PackedScene" uid="uid://bdrnn6npdar2e" path="res://assets/tile_straight.glb" id="2_yhbse"]
 [ext_resource type="PackedScene" uid="uid://kfapvo0krven" path="res://assets/tile_cornerRound.glb" id="3_smncr"]
 
 [node name="main" type="Node3D"]
-script = ExtResource("1_4vrq5")
+script = ExtResource("1_v46vx")
 tile_start = ExtResource("2_mcfgm")
 tile_straight = ExtResource("2_yhbse")
 tile_corner = ExtResource("3_smncr")
