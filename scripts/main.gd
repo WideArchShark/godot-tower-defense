@@ -28,7 +28,7 @@ func _complete_grid():
 func _display_path():
 	var _path:Array[Vector2i] = _pg.generate_path()
 	
-	while _path.size() < 35:
+	while _path.size() < 30:
 		_path = _pg.generate_path()
 
 	for element in _path:
@@ -40,7 +40,7 @@ func _display_path():
 		if tile_score == 2:
 			tile = tile_start.instantiate()
 			tile_rotation = Vector3(0,-90,0)
-		if tile_score == 8:
+		elif tile_score == 8:
 			tile = tile_start.instantiate()
 			tile_rotation = Vector3(0,90,0)
 		elif tile_score == 10:

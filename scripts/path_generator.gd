@@ -12,6 +12,7 @@ func _init(length:int, height:int):
 
 func generate_path():
 	_path.clear()
+	randomize()
 	
 	var x = 0
 	var y = int(_grid_height/2)
@@ -22,7 +23,7 @@ func generate_path():
 		
 		var choice:int = randi_range(0,2)
 
-		if choice == 0 or x % 2 == 0 or x == _grid_length-1:
+		if choice == 0 or x < 2 or x % 2 == 0 or x == _grid_length-1:
 			x += 1
 		elif choice == 1 and y < _grid_height-2 and not _path.has(Vector2i(x,y+1)):
 			y += 1
