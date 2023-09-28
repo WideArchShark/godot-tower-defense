@@ -1,17 +1,23 @@
-[gd_scene load_steps=6 format=3 uid="uid://72lu3y2bauhu"]
+[gd_scene load_steps=7 format=3 uid="uid://72lu3y2bauhu"]
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_v46vx"]
 [ext_resource type="PackedScene" uid="uid://c6gxxdpkt0iev" path="res://assets/tile_endRoundSpawn.glb" id="2_mcfgm"]
 [ext_resource type="PackedScene" uid="uid://cfmwnsfmblns3" path="res://assets/tile.glb" id="2_n410b"]
 [ext_resource type="PackedScene" uid="uid://bdrnn6npdar2e" path="res://assets/tile_straight.glb" id="2_yhbse"]
 [ext_resource type="PackedScene" uid="uid://kfapvo0krven" path="res://assets/tile_cornerRound.glb" id="3_smncr"]
+[ext_resource type="PackedScene" uid="uid://brj1k4f7ddhcv" path="res://assets/tile_crossing.glb" id="5_q7okj"]
 
 [node name="main" type="Node3D"]
 script = ExtResource("1_v46vx")
 tile_start = ExtResource("2_mcfgm")
+tile_end = ExtResource("2_mcfgm")
 tile_straight = ExtResource("2_yhbse")
 tile_corner = ExtResource("3_smncr")
+tile_crossroads = ExtResource("5_q7okj")
 tile_empty = ExtResource("2_n410b")
+min_path_size = 40
+min_loops = 0
+max_loops = 4
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.5, 0.866026, 0, -0.866026, 0.5, 7.5, 8.351, 9.5)
