@@ -11,13 +11,17 @@ func _init(length:int, height:int):
 	_grid_length = length
 	_grid_height = height
 
+## Function that does the main amount of work! Generates a random path going left to right, up or
+## down as it goes along. If add_loops is true, a post path function takes place to see where a 
+## loop could be placed. Note that loops can contain loops within them, making for some
+## interesting results!
 func generate_path(add_loops:bool = false):
 	_path.clear()
 	_loop_count = 0
 	randomize()
 	
 	var x = 0
-	var y = int(_grid_height/2)
+	var y = int(_grid_height/2.0)
 	
 	while x < _grid_length:
 		if not _path.has(Vector2i(x,y)):
@@ -36,8 +40,7 @@ func generate_path(add_loops:bool = false):
 		# Running add_loops multiple times, as I think the first time it might miss an opportunity.
 		# Haven't quite figured out why yet, but adding it twice adds more loops!
 		_add_loops()
-		_add_loops()
-		_add_loops()
+
 		
 	return _path
 
@@ -64,11 +67,19 @@ func get_path() -> Array[Vector2i]:
 
 func _add_loops():
 	# See if we can add any loops
-	for i in range(_path.size()):
-		var loop:Array[Vector2i] = _is_loop_option(i)
-		if loop.size() > 0:
-			for j in range(loop.size()):
-				_path.insert(i+1+j, loop[j])
+	var loops_generated:bool = true
+	
+	# Keep generating loops until you can't any more!
+	while loops_generated:
+		loops_generated = false
+		for i in range(_path.size()):
+			var loop:Array[Vector2i] = _is_loop_option(i)
+			# If the loops size > 0, then _is_loop_option found a loop... So add
+			# it to the array!
+			if loop.size() > 0:
+				loops_generated = true
+				for j in range(loop.size()):
+					_path.insert(i+1+j, loop[j])
 
 ## For a given index in the path, evaluate whether a loop can be generated
 ## around it.
@@ -90,7 +101,6 @@ func _is_loop_option(index:int) -> Array[Vector2i]:
 			return_path.reverse()
 			
 		_loop_count += 1
-#		print("Yellow")
 		return_path.append(Vector2i(x,y))
 	#Blue
 	elif (x > 2 and y > 1
@@ -100,12 +110,11 @@ func _is_loop_option(index:int) -> Array[Vector2i]:
 			and _tile_loc_free(x+1, y-2) and _tile_loc_free(x, y-2) and _tile_loc_free(x-1, y-2) and _tile_loc_free(x-2, y-2) and _tile_loc_free(x-3, y-2)
 			and _tile_loc_free(x-1, y+1) and _tile_loc_free(x-2, y+1)):
 		return_path = [Vector2i(x,y-1), Vector2i(x,y-2), Vector2i(x-1,y-2), Vector2i(x-2,y-2), Vector2i(x-2,y-1), Vector2i(x-2,y), Vector2i(x-1,y)]
-		
+
 		if _path[index-1].x > x:
 			return_path.reverse()
 
 		_loop_count += 1
-#		print("Blue")
 		return_path.append(Vector2i(x,y))
 	#Red
 	elif (x < _grid_length-1 and y < _grid_height-2
@@ -120,7 +129,6 @@ func _is_loop_option(index:int) -> Array[Vector2i]:
 			return_path.reverse()
 		
 		_loop_count += 1
-#		print("Red")
 		return_path.append(Vector2i(x,y))
 	# Brown
 	elif (x > 2 and y < _grid_height-2
@@ -129,27 +137,28 @@ func _is_loop_option(index:int) -> Array[Vector2i]:
 			and _tile_loc_free(x-1, y) and _tile_loc_free(x-2, y) and _tile_loc_free(x-3, y)
 			and _tile_loc_free(x+1, y+1) and _tile_loc_free(x, y+1) and _tile_loc_free(x-2, y+1) and _tile_loc_free(x-3, y+1)
 			and _tile_loc_free(x+1, y+2) and _tile_loc_free(x, y+2) and _tile_loc_free(x-1, y+2) and _tile_loc_free(x-2, y+2) and _tile_loc_free(x-3, y+2)):
-		return_path = [Vector2i(x,y+1	), Vector2i(x,y+2), Vector2i(x-1,y+2), Vector2i(x-2,y+2), Vector2i(x-2,y+1), Vector2i(x-2,y), Vector2i(x-1,y)]
+		return_path = [Vector2i(x,y+1), Vector2i(x,y+2), Vector2i(x-1,y+2), Vector2i(x-2,y+2), Vector2i(x-2,y+1), Vector2i(x-2,y), Vector2i(x-1,y)]
 
 		if _path[index-1].x > x:
 			return_path.reverse()
 		
 		_loop_count += 1
-#		print("Brown")
 		return_path.append(Vector2i(x,y))
 		
 	return return_path
 	
-## Returns true if there is a path tile at the x,y coordinate
+## Returns true if there is a path tile at the x,y coordinate.
 func _tile_loc_taken(x: int, y: int) -> bool:
 	return _path.has(Vector2i(x,y))
 	
-## Returns true if there is no path tile at the x,y coordinate
+## Returns true if there is no path tile at the x,y coordinate.
 func _tile_loc_free(x: int, y: int) -> bool:
 	return not _path.has(Vector2i(x,y))
-	
+
+## Returns the number of loops currently in the path.
 func get_loop_count() -> int:
 	return _loop_count
-	
+
+## Returns the Vector2i path tile at the given index.
 func get_path_tile(index:int) -> Vector2i:
 	return _path[index]

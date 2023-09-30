@@ -5,10 +5,12 @@ extends Node3D
 @export var tile_straight:PackedScene
 @export var tile_corner:PackedScene
 @export var tile_crossroads:PackedScene
-@export var tile_empty:PackedScene
+@export var tile_enemy:PackedScene
+@export var tile_empty:Array[PackedScene]
+
 
 @export var map_length:int = 16
-@export var map_height:int = 9
+@export var map_height:int = 10
 
 @export var min_path_size = 50
 @export var max_path_size = 70
@@ -26,20 +28,41 @@ func _ready():
 	await get_tree().create_timer(2).timeout
 	_pop_along_grid()
 	
-func _pop_along_grid():
-	var box = CSGBox3D.new()
-	add_child(box)
-	for element in _pg.get_path():
-		box.global_position = Vector3(element.x,0.1,element.y)
-		await get_tree().create_timer(0.25).timeout
+func _add_curve_point(c3d:Curve3D, v3:Vector3) ->bool:
+	c3d.add_point(v3)
+	return true
 	
+func _pop_along_grid():
+	var box = tile_enemy.instantiate()
+	
+	var c3d:Curve3D = Curve3D.new()
+	
+	for element in _pg.get_path():
+		c3d.add_point(Vector3(element.x, 0.4, element.y))
+
+	var p3d:Path3D = Path3D.new()
+	add_child(p3d)
+	p3d.curve = c3d
+	
+	var pf3d:PathFollow3D = PathFollow3D.new()
+	p3d.add_child(pf3d)
+	pf3d.add_child(box)
+	
+	var curr_distance:float = 0.0
+	
+	while curr_distance < c3d.point_count-1:
+		curr_distance += 0.02
+		pf3d.progress = clamp(curr_distance, 0, c3d.point_count-1.00001)
+		await get_tree().create_timer(0.01).timeout
+
 func _complete_grid():
 	for x in range(map_length):
 		for y in range(map_height):
 			if not _pg.get_path().has(Vector2i(x,y)):
-				var tile:Node3D = tile_empty.instantiate()
+				var tile:Node3D = tile_empty.pick_random().instantiate()
 				add_child(tile)
 				tile.global_position = Vector3(x, 0, y)
+				tile.global_rotation_degrees = Vector3(0, randi_range(0,3)*90, 0)
 	
 func _display_path():
 	var iteration_count:int = 1
@@ -47,7 +70,6 @@ func _display_path():
 
 	while _pg.get_path().size() < min_path_size or _pg.get_path().size() > max_path_size or _pg.get_loop_count() < min_loops or _pg.get_loop_count() > max_loops:
 		iteration_count += 1
-#		print(iteration_count, " ", _pg.get_loop_count())
 		_pg.generate_path(true)
 
 	print("Generated a path of %d tiles after %d iterations" % [_pg.get_path().size(), iteration_count])
@@ -57,7 +79,7 @@ func _display_path():
 	for i in range(_pg.get_path().size()):
 		var tile_score:int = _pg.get_tile_score(i)
 		
-		var tile:Node3D = tile_empty.instantiate()
+		var tile:Node3D = tile_empty[0].instantiate()
 		var tile_rotation: Vector3 = Vector3.ZERO
 		
 		if tile_score == 2:
