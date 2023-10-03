@@ -8,17 +8,7 @@ extends Node3D
 @export var tile_enemy:PackedScene
 @export var tile_empty:Array[PackedScene]
 
-@export var map_length:int = 16
-@export var map_height:int = 10
-
-@export var min_path_size = 50
-@export var max_path_size = 70
-@export var min_loops = 3
-@export var max_loops = 5
-
-#var _pg:PathGenerator
-
-# Called when the node enters the scene tree for the first time.
+## Assumes the path generator has finished, and adds the remaining tiles to fill in the grid.
 func _ready():
 	_complete_grid()
 	
@@ -49,8 +39,8 @@ func _pop_along_grid():
 		await get_tree().create_timer(0.01).timeout
 
 func _complete_grid():
-	for x in range(map_length):
-		for y in range(map_height):
+	for x in range(PathGenInstance.path_config.map_length):
+		for y in range(PathGenInstance.path_config.map_height):
 			if not PathGenInstance.get_path_route().has(Vector2i(x,y)):
 				var tile:Node3D = tile_empty.pick_random().instantiate()
 				add_child(tile)
@@ -95,5 +85,3 @@ func _complete_grid():
 		add_child(tile)
 		tile.global_position = Vector3(PathGenInstance.get_path_tile(i).x, 0, PathGenInstance.get_path_tile(i).y)
 		tile.global_rotation_degrees = tile_rotation
-	
-
