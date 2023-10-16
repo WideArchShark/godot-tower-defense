@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://cmnge1crd337m"]
+
+[ext_resource type="PackedScene" uid="uid://brj1k4f7ddhcv" path="res://assets/tile_crossing.glb" id="1_ytcww"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_lw0cg"]
+size = Vector3(1, 0.2, 1)
+
+[node name="TileCrossroads" type="Area3D" groups=["path"]]
+
+[node name="tile_crossing" parent="." instance=ExtResource("1_ytcww")]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 0)
+shape = SubResource("BoxShape3D_lw0cg")
