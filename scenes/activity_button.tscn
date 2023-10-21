@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://1b40l6h76su0"]
+
+[ext_resource type="Script" path="res://activity_button.gd" id="1_qocsi"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_e5be7"]
+
+[node name="ActivityButton" type="Button"]
+custom_minimum_size = Vector2(96, 96)
+offset_right = 8.0
+offset_bottom = 8.0
+theme_override_styles/focus = SubResource("StyleBoxEmpty_e5be7")
+script = ExtResource("1_qocsi")
+
+[connection signal="button_down" from="." to="." method="_on_button_down"]
+[connection signal="button_up" from="." to="." method="_on_button_up"]

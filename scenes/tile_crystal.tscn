@@ -6,6 +6,7 @@
 size = Vector3(1, 0.8, 1)
 
 [node name="TileCrystal" type="Area3D" groups=["grid_crystal"]]
+collision_layer = 33
 
 [node name="tile_crystal" parent="." instance=ExtResource("1_usuiq")]
 

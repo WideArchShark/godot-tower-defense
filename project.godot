@@ -12,16 +12,25 @@ config_version=5
 
 config/name="Tower Defense Tutorial 2"
 run/main_scene="res://scenes/main.tscn"
-config/features=PackedStringArray("4.1", "Forward Plus")
+config/features=PackedStringArray("4.2", "Forward Plus")
 config/icon="res://icon.svg"
 
 [autoload]
 
 PathGenInstance="*res://scripts/path_generator.gd"
 
+[display]
+
+window/size/viewport_width=1280
+window/size/viewport_height=720
+
 [editor_plugins]
 
 enabled=PackedStringArray("res://addons/godot_state_charts/plugin.cfg")
+
+[global]
+
+test=false
 
 [input]
 
@@ -33,4 +42,9 @@ left_click={
 
 [layer_names]
 
+3d_physics/layer_1="Default"
 3d_physics/layer_2="Path"
+3d_physics/layer_3="Empty"
+3d_physics/layer_4="Tree"
+3d_physics/layer_5="Rock"
+3d_physics/layer_6="Crystal"
