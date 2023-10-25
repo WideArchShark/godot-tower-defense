@@ -1,4 +1,6 @@
-[gd_scene load_steps=13 format=3 uid="uid://bw7qjsw1xnlvj"]
+[gd_scene load_steps=15 format=3 uid="uid://bw7qjsw1xnlvj"]
+
+[ext_resource type="Script" path="res://scripts/turret_1.gd" id="1_3ec1f"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_d122o"]
 resource_name = "stone"
@@ -199,7 +201,11 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_023jd")
 
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_21f5h"]
+radius = 3.0
+
 [node name="Turret1" type="Node3D"]
+script = ExtResource("1_3ec1f")
 
 [node name="Cannon" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.159072, 0)
@@ -219,3 +225,14 @@ skeleton = NodePath("")
 [node name="towerRound_base2" type="MeshInstance3D" parent="Base"]
 mesh = SubResource("ArrayMesh_73qgd")
 skeleton = NodePath("")
+
+[node name="PatrolZone" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PatrolZone"]
+shape = SubResource("CylinderShape3D_21f5h")
+
+[connection signal="area_entered" from="PatrolZone" to="." method="_on_patrol_zone_area_entered"]
+[connection signal="area_exited" from="PatrolZone" to="." method="_on_patrol_zone_area_exited"]

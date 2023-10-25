@@ -6,7 +6,6 @@
 size = Vector3(1, 0.2, 1)
 
 [node name="TileEnd" type="Area3D" groups=["path"]]
-collision_layer = 2
 collision_mask = 0
 
 [node name="tile_endRoundSpawn" parent="." instance=ExtResource("1_o05ji")]

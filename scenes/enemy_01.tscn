@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://bdh0cqv4kt8t8"]
+[gd_scene load_steps=18 format=3 uid="uid://bdh0cqv4kt8t8"]
 
 [ext_resource type="Script" path="res://scripts/basic_enemy.gd" id="1_x18ab"]
 [ext_resource type="Script" path="res://addons/godot_state_charts/state_chart.gd" id="2_5wlrk"]
@@ -244,6 +244,9 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_1lvj5")
 
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_qn8pp"]
+height = 0.75
+
 [node name="Enemy01" type="Node3D"]
 script = ExtResource("1_x18ab")
 enemy_settings = ExtResource("2_ariuf")
@@ -311,13 +314,21 @@ script = ExtResource("4_oaeau")
 [node name="Path3D" type="Path3D" parent="."]
 
 [node name="PathFollow3D" type="PathFollow3D" parent="Path3D"]
-transform = Transform3D(0.013839, 0, -0.999882, 0, 0.999989, 0, 0.999876, 0, 0.013839, -3.15366, 0, -1.85419)
+transform = Transform3D(0.999972, 0, 0, 0, 0.999989, 0, 0, 0, 0.999978, 0, 0, 0)
 
 [node name="enemy_ufoRed2" type="MeshInstance3D" parent="Path3D/PathFollow3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
 visible = false
 mesh = SubResource("ArrayMesh_y2yv6")
 skeleton = NodePath("")
+
+[node name="Area3D" type="Area3D" parent="Path3D/PathFollow3D"]
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Path3D/PathFollow3D/Area3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+shape = SubResource("CylinderShape3D_qn8pp")
 
 [connection signal="state_entered" from="EnemyStateChart/CompoundState/Spawning" to="." method="_on_spawning_state_entered"]
 [connection signal="state_entered" from="EnemyStateChart/CompoundState/Travelling" to="." method="_on_travelling_state_entered"]

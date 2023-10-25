@@ -42,8 +42,8 @@ left_click={
 
 [layer_names]
 
-3d_physics/layer_1="Default"
-3d_physics/layer_2="Path"
+3d_physics/layer_1="Path"
+3d_physics/layer_2="Enemy"
 3d_physics/layer_3="Empty"
 3d_physics/layer_4="Tree"
 3d_physics/layer_5="Rock"

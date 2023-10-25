@@ -13,9 +13,8 @@ func _ready():
 	$Path3D.curve = path_route_to_curve_3d()
 	$Path3D/PathFollow3D.progress = 0
 	
-
 func _on_spawning_state_entered():
-	print("Spawning")
+	#print("Spawning")
 	attackable = false
 	$AnimationPlayer.play("spawn")
 	await $AnimationPlayer.animation_finished

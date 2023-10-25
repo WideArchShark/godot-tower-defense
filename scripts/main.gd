@@ -16,13 +16,15 @@ var RAYCAST_LENGTH:float = 100
 ## Assumes the path generator has finished, and adds the remaining tiles to fill in the grid.
 func _ready():
 	_complete_grid()
+	_spawn_wave()
 	
-	#for i in range(10):
-		#await get_tree().create_timer(2.275).timeout
+func _spawn_wave():	
+	for i in range(2):
+		await get_tree().create_timer(2.275).timeout
 		#print("Instantiating enemy")
-		#var enemy2:Node3D = enemy.instantiate()
-		#add_child(enemy2)
-		#enemy2.add_to_group("enemies")
+		var enemy2:Node3D = enemy.instantiate()
+		add_child(enemy2)
+		enemy2.add_to_group("enemies")
 	
 func _complete_grid():
 	for x in range(PathGenInstance.path_config.map_length):
