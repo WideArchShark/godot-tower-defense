@@ -19,7 +19,7 @@ func _ready():
 	_spawn_wave()
 	
 func _spawn_wave():	
-	for i in range(2):
+	for i in range(10):
 		await get_tree().create_timer(2.275).timeout
 		#print("Instantiating enemy")
 		var enemy2:Node3D = enemy.instantiate()
@@ -34,7 +34,6 @@ func _complete_grid():
 				add_child(tile)
 				tile.global_position = Vector3(x, 0, y)
 				tile.global_rotation_degrees = Vector3(0, randi_range(0,3)*90, 0)
-	
 	
 	for i in range(PathGenInstance.get_path_route().size()):
 		var tile_score:int = PathGenInstance.get_tile_score(i)

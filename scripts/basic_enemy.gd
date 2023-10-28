@@ -39,7 +39,6 @@ func _on_despawning_state_entered():
 	$EnemyStateChart.send_event("to_remove_enemy_state")
 
 func _on_remove_enemy_state_entered():
-#	print("queue_free()")
 	queue_free()
 
 func _on_damaging_state_entered():

@@ -1,6 +1,10 @@
-[gd_scene load_steps=15 format=3 uid="uid://bw7qjsw1xnlvj"]
+[gd_scene load_steps=19 format=3 uid="uid://bw7qjsw1xnlvj"]
 
 [ext_resource type="Script" path="res://scripts/turret_1.gd" id="1_3ec1f"]
+[ext_resource type="Script" path="res://addons/godot_state_charts/state_chart.gd" id="2_068uy"]
+[ext_resource type="Script" path="res://addons/godot_state_charts/compound_state.gd" id="3_iievw"]
+[ext_resource type="Script" path="res://addons/godot_state_charts/atomic_state.gd" id="4_pkuyo"]
+[ext_resource type="Script" path="res://addons/godot_state_charts/transition.gd" id="5_mbebp"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_d122o"]
 resource_name = "stone"
@@ -234,5 +238,46 @@ collision_mask = 2
 [node name="CollisionShape3D" type="CollisionShape3D" parent="PatrolZone"]
 shape = SubResource("CylinderShape3D_21f5h")
 
+[node name="StateChart" type="Node" parent="."]
+script = ExtResource("2_068uy")
+
+[node name="CompoundState" type="Node" parent="StateChart"]
+script = ExtResource("3_iievw")
+initial_state = NodePath("PatrollingState")
+
+[node name="PatrollingState" type="Node" parent="StateChart/CompoundState"]
+script = ExtResource("4_pkuyo")
+
+[node name="AcquringState" type="Node" parent="StateChart/CompoundState/PatrollingState"]
+script = ExtResource("5_mbebp")
+to = NodePath("../../AcquiringState")
+event = &"to_acquiring_state"
+
+[node name="AcquiringState" type="Node" parent="StateChart/CompoundState"]
+script = ExtResource("4_pkuyo")
+
+[node name="AttackingState" type="Node" parent="StateChart/CompoundState/AcquiringState"]
+script = ExtResource("5_mbebp")
+to = NodePath("../../AttackingState")
+event = &"to_attacking_state"
+
+[node name="PatrollingState" type="Node" parent="StateChart/CompoundState/AcquiringState"]
+script = ExtResource("5_mbebp")
+to = NodePath("../../PatrollingState")
+event = &"to_patrolling_state"
+
+[node name="AttackingState" type="Node" parent="StateChart/CompoundState"]
+script = ExtResource("4_pkuyo")
+
+[node name="PatrollingState" type="Node" parent="StateChart/CompoundState/AttackingState"]
+script = ExtResource("5_mbebp")
+to = NodePath("../../PatrollingState")
+event = &"to_patrolling_state"
+
 [connection signal="area_entered" from="PatrolZone" to="." method="_on_patrol_zone_area_entered"]
 [connection signal="area_exited" from="PatrolZone" to="." method="_on_patrol_zone_area_exited"]
+[connection signal="state_processing" from="StateChart/CompoundState/PatrollingState" to="." method="_on_patrolling_state_state_processing"]
+[connection signal="state_entered" from="StateChart/CompoundState/AcquiringState" to="." method="_on_acquiring_state_state_entered"]
+[connection signal="state_physics_processing" from="StateChart/CompoundState/AcquiringState" to="." method="_on_acquiring_state_state_physics_processing"]
+[connection signal="state_entered" from="StateChart/CompoundState/AttackingState" to="." method="_on_attacking_state_state_entered"]
+[connection signal="state_physics_processing" from="StateChart/CompoundState/AttackingState" to="." method="_on_attacking_state_state_physics_processing"]
