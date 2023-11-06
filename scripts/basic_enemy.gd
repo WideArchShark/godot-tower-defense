@@ -2,6 +2,8 @@ extends Node3D
 
 @export var enemy_settings:EnemySettings
 
+var enemy_health:int
+
 var attackable:bool = false
 var distance_travelled:float = 0
 
@@ -10,6 +12,7 @@ var path_follow_3d:PathFollow3D
 
 func _ready():
 #	print("Ready")
+	enemy_health = enemy_settings.health
 	$Path3D.curve = path_route_to_curve_3d()
 	$Path3D/PathFollow3D.progress = 0
 	
@@ -57,3 +60,11 @@ func path_route_to_curve_3d() -> Curve3D:
 		c3d.add_point(Vector3(element.x, 0.25, element.y))
 
 	return c3d
+
+
+func _on_area_3d_area_entered(area):
+	if area is Projectile:
+		enemy_health -= area.damage
+
+	if enemy_health <= 0:
+		queue_free()

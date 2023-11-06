@@ -1,7 +1,8 @@
-[gd_scene load_steps=19 format=3 uid="uid://bw7qjsw1xnlvj"]
+[gd_scene load_steps=20 format=3 uid="uid://bw7qjsw1xnlvj"]
 
 [ext_resource type="Script" path="res://scripts/turret_1.gd" id="1_3ec1f"]
 [ext_resource type="Script" path="res://addons/godot_state_charts/state_chart.gd" id="2_068uy"]
+[ext_resource type="PackedScene" uid="uid://bui2kgul48s0x" path="res://scenes/cannonball.tscn" id="2_duspt"]
 [ext_resource type="Script" path="res://addons/godot_state_charts/compound_state.gd" id="3_iievw"]
 [ext_resource type="Script" path="res://addons/godot_state_charts/atomic_state.gd" id="4_pkuyo"]
 [ext_resource type="Script" path="res://addons/godot_state_charts/transition.gd" id="5_mbebp"]
@@ -210,6 +211,7 @@ radius = 3.0
 
 [node name="Turret1" type="Node3D"]
 script = ExtResource("1_3ec1f")
+projectile_type = ExtResource("2_duspt")
 
 [node name="Cannon" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.159072, 0)
@@ -223,6 +225,9 @@ skeleton = NodePath("")
 transform = Transform3D(0.35, 0, 0, 0, 2.08616e-08, 0.35, 0, -0.35, 2.08616e-08, 2.88765e-15, 0.130682, 0.00996183)
 mesh = SubResource("ArrayMesh_rxb56")
 skeleton = NodePath("")
+
+[node name="projectile_spawn" type="Node3D" parent="Cannon"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.266431, -0.246072)
 
 [node name="Base" type="Node3D" parent="."]
 

@@ -324,7 +324,7 @@ skeleton = NodePath("")
 
 [node name="Area3D" type="Area3D" parent="Path3D/PathFollow3D"]
 collision_layer = 2
-collision_mask = 0
+collision_mask = 4
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Path3D/PathFollow3D/Area3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
@@ -337,3 +337,4 @@ shape = SubResource("CylinderShape3D_qn8pp")
 [connection signal="state_entered" from="EnemyStateChart/CompoundState/Dying" to="." method="_on_dying_state_entered"]
 [connection signal="state_entered" from="EnemyStateChart/CompoundState/Despawning" to="." method="_on_despawning_state_entered"]
 [connection signal="state_entered" from="EnemyStateChart/CompoundState/RemoveEnemy" to="." method="_on_remove_enemy_state_entered"]
+[connection signal="area_entered" from="Path3D/PathFollow3D/Area3D" to="." method="_on_area_3d_area_entered"]

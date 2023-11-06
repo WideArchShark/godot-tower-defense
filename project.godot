@@ -44,7 +44,7 @@ left_click={
 
 3d_physics/layer_1="Path"
 3d_physics/layer_2="Enemy"
-3d_physics/layer_3="Empty"
+3d_physics/layer_3="Projectiles"
 3d_physics/layer_4="Tree"
 3d_physics/layer_5="Rock"
 3d_physics/layer_6="Crystal"
