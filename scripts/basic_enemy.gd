@@ -1,8 +1,11 @@
 extends Node3D
+class_name Enemy
 
 @export var enemy_settings:EnemySettings
 
 var enemy_health:int
+
+signal enemy_finished
 
 var attackable:bool = false
 var distance_travelled:float = 0
@@ -36,7 +39,7 @@ func _on_travelling_state_processing(delta):
 		$EnemyStateChart.send_event("to_damaging_state")
 
 func _on_despawning_state_entered():
-#	print("Despawning")
+	enemy_finished.emit()
 	$AnimationPlayer.play("despawn")
 	await $AnimationPlayer.animation_finished
 	$EnemyStateChart.send_event("to_remove_enemy_state")
@@ -50,7 +53,10 @@ func _on_damaging_state_entered():
 	$EnemyStateChart.send_event("to_despawning_state")
 
 func _on_dying_state_entered():
-#	print("Playing a dying animation!")
+	enemy_finished.emit()
+	$ExplosionAudio.play()
+	$Path3D/PathFollow3D/enemy_ufoRed2.visible = false
+	await $ExplosionAudio.finished
 	$EnemyStateChart.send_event("to_remove_enemy_state")
 	
 func path_route_to_curve_3d() -> Curve3D:
@@ -61,10 +67,9 @@ func path_route_to_curve_3d() -> Curve3D:
 
 	return c3d
 
-
 func _on_area_3d_area_entered(area):
 	if area is Projectile:
 		enemy_health -= area.damage
 
 	if enemy_health <= 0:
-		queue_free()
+		$EnemyStateChart.send_event("to_dying_state")

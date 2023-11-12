@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://bdh0cqv4kt8t8"]
+[gd_scene load_steps=19 format=3 uid="uid://bdh0cqv4kt8t8"]
 
 [ext_resource type="Script" path="res://scripts/basic_enemy.gd" id="1_x18ab"]
 [ext_resource type="Script" path="res://addons/godot_state_charts/state_chart.gd" id="2_5wlrk"]
@@ -6,6 +6,7 @@
 [ext_resource type="Script" path="res://addons/godot_state_charts/compound_state.gd" id="3_ah54x"]
 [ext_resource type="Script" path="res://addons/godot_state_charts/atomic_state.gd" id="4_oaeau"]
 [ext_resource type="Script" path="res://addons/godot_state_charts/transition.gd" id="5_2ibju"]
+[ext_resource type="AudioStream" uid="uid://3i4mrdifi4k7" path="res://audio/explosion.mp3" id="7_xtq1q"]
 
 [sub_resource type="Animation" id="Animation_qxxns"]
 length = 0.001
@@ -329,6 +330,10 @@ collision_mask = 4
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Path3D/PathFollow3D/Area3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
 shape = SubResource("CylinderShape3D_qn8pp")
+
+[node name="ExplosionAudio" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("7_xtq1q")
+bus = &"FX"
 
 [connection signal="state_entered" from="EnemyStateChart/CompoundState/Spawning" to="." method="_on_spawning_state_entered"]
 [connection signal="state_entered" from="EnemyStateChart/CompoundState/Travelling" to="." method="_on_travelling_state_entered"]
