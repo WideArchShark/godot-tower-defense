@@ -49,11 +49,13 @@ func _on_remove_enemy_state_entered():
 
 func _on_damaging_state_entered():
 	attackable = false
-#	print("doing some damage!")
 	$EnemyStateChart.send_event("to_despawning_state")
 
 func _on_dying_state_entered():
 	enemy_finished.emit()
+	$Path3D/PathFollow3D/Smoke.emitting = true
+	$Path3D/PathFollow3D/Explosion.emitting = true
+
 	$ExplosionAudio.play()
 	$Path3D/PathFollow3D/enemy_ufoRed2.visible = false
 	await $ExplosionAudio.finished

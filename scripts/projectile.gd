@@ -5,7 +5,7 @@ var starting_position:Vector3
 var target:Node3D
 
 @export var speed:float = 2 # metres per second
-@export var damage:int = 15
+@export var damage:int = 25
 var lerp_pos:float = 0
 
 # Called when the node enters the scene tree for the first time.

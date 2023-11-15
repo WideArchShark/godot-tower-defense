@@ -11,7 +11,6 @@ var _cam:Camera3D
 var RAYCAST_LENGTH:float = 100
 @onready var _error_mat:BaseMaterial3D = preload("res://materials/red_transparent.material")
 
-
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	icon = activity_button_icon
