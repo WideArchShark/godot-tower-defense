@@ -8,7 +8,11 @@ extends Node3D
 @export var tile_enemy:PackedScene
 @export var tile_empty:Array[PackedScene]
 
+const BASIC_ENEMY_SETTINGS = preload("res://resources/basic_enemy_settings.res")
+const POWER_ENEMY_SETTINGS = preload("res://resources/power_enemy_settings.res")
+
 @export var enemy:PackedScene
+@export var enemy_wave:Array[EnemySettings]
 
 @onready var cam = $Camera3D
 var RAYCAST_LENGTH:float = 100
@@ -19,10 +23,12 @@ func _ready():
 	_spawn_wave()
 	
 func _spawn_wave():	
-	for i in range(20):
-		await get_tree().create_timer(2.275).timeout
+	for i in range(enemy_wave.size()):
+		await get_tree().create_timer(enemy_wave[i].next_enemy_delay).timeout
 		#print("Instantiating enemy")
-		var enemy2:Node3D = enemy.instantiate()
+		var enemy2:Enemy = enemy.instantiate()
+		enemy2.enemy_settings = enemy_wave[i]
+		
 		add_child(enemy2)
 		enemy2.add_to_group("enemies")
 	

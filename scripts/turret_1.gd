@@ -15,6 +15,7 @@ func _on_patrol_zone_area_entered(area):
 		current_enemy = area
 	enemies_in_range.append(area)
 
+
 func _on_patrol_zone_area_exited(area):
 	enemies_in_range.erase(area)
 
@@ -42,7 +43,7 @@ func _on_patrolling_state_state_processing(_delta):
 	if enemies_in_range.size() > 0:
 		current_enemy = enemies_in_range[0]
 		current_enemy_class = _find_enemy_parent(current_enemy)
-		current_enemy_class.enemy_finished.connect(_remove_current_enemy)
+		#current_enemy_class.enemy_finished.connect(_remove_current_enemy)
 		$StateChart.send_event("to_acquiring_state")
 
 func _remove_current_enemy():
@@ -55,14 +56,20 @@ func _on_acquiring_state_state_entered():
 
 func _on_acquiring_state_state_physics_processing(delta):
 	if current_enemy != null and enemies_in_range.has(current_enemy):
-		rotate_towards_target(current_enemy, delta)
+		if current_enemy_class.attackable:
+			rotate_towards_target(current_enemy, delta)
+		else:
+			enemies_in_range.erase(current_enemy)
 	else:
 		$StateChart.send_event("to_patrolling_state")
 
 func _on_attacking_state_state_physics_processing(_delta):
-	if current_enemy != null and enemies_in_range.has(current_enemy):
-		$Cannon.look_at(current_enemy.global_position)
-		_maybe_fire()
+	if current_enemy != null and current_enemy_class.attackable and enemies_in_range.has(current_enemy):
+		if current_enemy_class.attackable:
+			$Cannon.look_at(current_enemy.global_position)
+			_maybe_fire()
+		else:
+			enemies_in_range.erase(current_enemy)
 	else:
 		$StateChart.send_event("to_patrolling_state")
 
