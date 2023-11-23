@@ -26,7 +26,7 @@ func _physics_process(_delta):
 		var mouse_pos:Vector2 = get_viewport().get_mouse_position()
 		var origin:Vector3 = _cam.project_ray_origin(mouse_pos)
 		var end:Vector3 = origin + _cam.project_ray_normal(mouse_pos) * RAYCAST_LENGTH
-		var query = PhysicsRayQueryParameters3D.create(origin, end)
+		var query = PhysicsRayQueryParameters3D.create(origin, end, 57)
 		query.collide_with_areas = true
 		var rayResult:Dictionary = space_state.intersect_ray(query)
 		if rayResult.size() > 0:

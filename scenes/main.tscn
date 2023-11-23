@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://72lu3y2bauhu"]
+[gd_scene load_steps=22 format=3 uid="uid://72lu3y2bauhu"]
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_v46vx"]
 [ext_resource type="PackedScene" uid="uid://bmgx4usrgj1hn" path="res://scenes/tile_end.tscn" id="2_0mfwr"]
@@ -11,11 +11,15 @@
 [ext_resource type="PackedScene" uid="uid://5nvpjyffqt6e" path="res://scenes/tile_tree.tscn" id="9_o0h1j"]
 [ext_resource type="PackedScene" uid="uid://c5udqgnysu44o" path="res://scenes/tile_empty.tscn" id="10_isnq1"]
 [ext_resource type="PackedScene" uid="uid://bdh0cqv4kt8t8" path="res://scenes/enemy_01.tscn" id="11_qo57y"]
-[ext_resource type="Resource" uid="uid://b6pb1lrpq3m4j" path="res://resources/basic_enemy_settings.res" id="12_3qsk7"]
 [ext_resource type="PackedScene" uid="uid://1b40l6h76su0" path="res://scenes/activity_button.tscn" id="12_33i1u"]
-[ext_resource type="Resource" uid="uid://ddw64bv75q5dm" path="res://resources/power_enemy_settings.res" id="13_j766m"]
+[ext_resource type="Resource" uid="uid://ogcw30ui2rnp" path="res://resources/wave_01.tres" id="12_u0m8d"]
+[ext_resource type="Resource" uid="uid://r4m5tori423b" path="res://resources/wave_02.tres" id="13_etu8d"]
 [ext_resource type="Texture2D" uid="uid://dnwe442illoox" path="res://images/cannon01a.png" id="13_x1qgb"]
 [ext_resource type="PackedScene" uid="uid://bw7qjsw1xnlvj" path="res://scenes/turret_1.tscn" id="14_8uhva"]
+[ext_resource type="Script" path="res://addons/godot_state_charts/state_chart.gd" id="17_cb2p7"]
+[ext_resource type="Script" path="res://addons/godot_state_charts/compound_state.gd" id="18_qn1i5"]
+[ext_resource type="Script" path="res://addons/godot_state_charts/atomic_state.gd" id="19_rlpe7"]
+[ext_resource type="Script" path="res://addons/godot_state_charts/transition.gd" id="20_doj35"]
 
 [sub_resource type="Environment" id="Environment_wmip2"]
 background_mode = 1
@@ -37,7 +41,7 @@ tile_crossroads = ExtResource("5_cscfw")
 tile_enemy = ExtResource("6_5cncu")
 tile_empty = Array[PackedScene]([ExtResource("7_3srkm"), ExtResource("8_w37o2"), ExtResource("9_o0h1j"), ExtResource("10_isnq1"), ExtResource("10_isnq1"), ExtResource("10_isnq1"), ExtResource("10_isnq1")])
 enemy = ExtResource("11_qo57y")
-enemy_wave = Array[Resource("res://scripts/enemy_settings.gd")]([ExtResource("12_3qsk7"), ExtResource("13_j766m"), ExtResource("13_j766m"), ExtResource("13_j766m"), ExtResource("12_3qsk7"), ExtResource("13_j766m")])
+enemy_waves = Array[Resource("res://scripts/wave.gd")]([ExtResource("12_u0m8d"), ExtResource("13_etu8d")])
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.422618, 0.906308, 0, -0.906308, 0.422618, 7.5, 9, 9.5)
@@ -74,3 +78,43 @@ grow_horizontal = 2
 grow_vertical = 0
 activity_button_icon = ExtResource("13_x1qgb")
 activity_draggable = ExtResource("14_8uhva")
+
+[node name="StateChart" type="Node" parent="."]
+script = ExtResource("17_cb2p7")
+
+[node name="CompoundState" type="Node" parent="StateChart"]
+script = ExtResource("18_qn1i5")
+initial_state = NodePath("Initial")
+
+[node name="Initial" type="Node" parent="StateChart/CompoundState"]
+script = ExtResource("19_rlpe7")
+
+[node name="Active" type="Node" parent="StateChart/CompoundState/Initial"]
+script = ExtResource("20_doj35")
+to = NodePath("../../Active")
+event = &"to_active"
+
+[node name="Complete" type="Node" parent="StateChart/CompoundState"]
+script = ExtResource("19_rlpe7")
+
+[node name="Active" type="Node" parent="StateChart/CompoundState/Complete"]
+script = ExtResource("20_doj35")
+to = NodePath("../../Active")
+event = &"to_active"
+
+[node name="Active" type="Node" parent="StateChart/CompoundState"]
+script = ExtResource("19_rlpe7")
+
+[node name="Complete" type="Node" parent="StateChart/CompoundState/Active"]
+script = ExtResource("20_doj35")
+to = NodePath("../../Complete")
+event = &"to_complete"
+
+[node name="StartWaveButton" type="Button" parent="."]
+offset_right = 8.0
+offset_bottom = 8.0
+text = "Start Wave"
+
+[connection signal="state_entered" from="StateChart/CompoundState/Complete" to="." method="_on_complete_state_entered"]
+[connection signal="state_entered" from="StateChart/CompoundState/Active" to="." method="_on_active_state_entered"]
+[connection signal="pressed" from="StartWaveButton" to="." method="_on_start_wave_button_pressed"]

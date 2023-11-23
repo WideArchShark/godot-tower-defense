@@ -3,7 +3,7 @@ class_name Enemy
 
 @export var enemy_settings:EnemySettings
 
-var enemy_health:int
+var enemy_health:float
 
 signal enemy_finished
 

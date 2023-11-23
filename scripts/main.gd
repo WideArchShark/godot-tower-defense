@@ -12,26 +12,47 @@ const BASIC_ENEMY_SETTINGS = preload("res://resources/basic_enemy_settings.res")
 const POWER_ENEMY_SETTINGS = preload("res://resources/power_enemy_settings.res")
 
 @export var enemy:PackedScene
-@export var enemy_wave:Array[EnemySettings]
+@export var enemy_waves:Array[Wave]
+
+var wave_spawned:bool = false
+var enemies_remaining = 0
 
 @onready var cam = $Camera3D
 var RAYCAST_LENGTH:float = 100
 
+var current_wave_index:int = 0
+
 ## Assumes the path generator has finished, and adds the remaining tiles to fill in the grid.
 func _ready():
 	_complete_grid()
-	_spawn_wave()
-	
-func _spawn_wave():	
+	#_spawn_wave()
+
+func _spawn_wave():
+	var enemy_wave:Array[EnemySettings] = enemy_waves[current_wave_index].enemies
+	wave_spawned = false
+	enemies_remaining = 0
+
 	for i in range(enemy_wave.size()):
+		
 		await get_tree().create_timer(enemy_wave[i].next_enemy_delay).timeout
-		#print("Instantiating enemy")
+		print("Instantiating enemy")
 		var enemy2:Enemy = enemy.instantiate()
 		enemy2.enemy_settings = enemy_wave[i]
 		
 		add_child(enemy2)
 		enemy2.add_to_group("enemies")
+		enemies_remaining += 1
+		enemy2.connect("enemy_finished", _check_wave)
 	
+	wave_spawned = true
+	#$StateChart.send_event("to_complete")
+
+func _check_wave():
+	print("Got here!")
+	enemies_remaining -= 1
+	if enemies_remaining <= 0 and wave_spawned:
+		$StateChart.send_event("to_complete")
+
 func _complete_grid():
 	for x in range(PathGenInstance.path_config.map_length):
 		for y in range(PathGenInstance.path_config.map_height):
@@ -78,3 +99,17 @@ func _complete_grid():
 		add_child(tile)
 		tile.global_position = Vector3(PathGenInstance.get_path_tile(i).x, 0, PathGenInstance.get_path_tile(i).y)
 		tile.global_rotation_degrees = tile_rotation
+
+
+func _on_start_wave_button_pressed():
+	$StateChart.send_event("to_active")
+
+
+func _on_active_state_entered():
+	$StartWaveButton.disabled = true
+	_spawn_wave()
+
+
+func _on_complete_state_entered():
+	current_wave_index += 1
+	$StartWaveButton.disabled = false
