@@ -2,6 +2,7 @@ extends Node3D
 class_name Enemy
 
 @export var enemy_settings:EnemySettings
+@onready var progress_bar = $HealthBar/ProgressBar
 
 var enemy_health:float
 
@@ -16,6 +17,8 @@ var path_follow_3d:PathFollow3D
 func _ready():
 #	print("Ready")
 	enemy_health = enemy_settings.health
+	progress_bar.max_value = enemy_health
+	progress_bar.value = enemy_health
 	var enemy_mesh = enemy_settings.enemy_scene.instantiate()
 	$Path3D/PathFollow3D/Enemy.add_child(enemy_mesh)
 	$Path3D.curve = path_route_to_curve_3d()
@@ -24,6 +27,7 @@ func _ready():
 func _on_spawning_state_entered():
 	#print("Spawning")
 	attackable = true
+	progress_bar.visible = false
 	$AnimationPlayer.play("spawn")
 	await $AnimationPlayer.animation_finished
 	$EnemyStateChart.send_event("to_travelling_state")
@@ -31,6 +35,7 @@ func _on_spawning_state_entered():
 func _on_travelling_state_entered():
 #	print("Travelling")
 	attackable = true
+	progress_bar.visible = true
 
 func _on_travelling_state_processing(delta):
 	distance_travelled += (delta * enemy_settings.speed)
@@ -42,6 +47,7 @@ func _on_travelling_state_processing(delta):
 
 func _on_despawning_state_entered():
 	enemy_finished.emit()
+	progress_bar.visible = false
 	$AnimationPlayer.play("despawn")
 	await $AnimationPlayer.animation_finished
 	$EnemyStateChart.send_event("to_remove_enemy_state")
@@ -55,6 +61,7 @@ func _on_damaging_state_entered():
 
 func _on_dying_state_entered():
 	attackable = false
+	progress_bar.visible = false
 	$Path3D/PathFollow3D/Enemy.visible = false
 	enemy_finished.emit()
 	$Path3D/PathFollow3D/Smoke.emitting = true
@@ -76,6 +83,7 @@ func path_route_to_curve_3d() -> Curve3D:
 func _on_area_3d_area_entered(area):
 	if area is Projectile:
 		enemy_health -= area.damage
+		progress_bar.value = enemy_health
 
 	if enemy_health <= 0:
 		$EnemyStateChart.send_event("to_dying_state")

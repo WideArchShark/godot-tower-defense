@@ -1,0 +1,39 @@
+[gd_scene load_steps=4 format=3 uid="uid://3gqpm3i6vk20"]
+
+[ext_resource type="Script" path="res://scripts/progress_bar.gd" id="1_dbtmm"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_h337k"]
+bg_color = Color(0, 0, 0, 0.376471)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_oqljt"]
+resource_local_to_scene = true
+bg_color = Color(0, 0.67451, 0.768627, 1)
+
+[node name="HealthBar" type="SubViewportContainer"]
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="SubViewport" type="SubViewport" parent="."]
+handle_input_locally = false
+size = Vector2i(256, 64)
+render_target_update_mode = 4
+
+[node name="ProgressBar" type="ProgressBar" parent="SubViewport"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -64.0
+offset_top = -12.0
+offset_right = 64.0
+offset_bottom = 12.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_h337k")
+theme_override_styles/fill = SubResource("StyleBoxFlat_oqljt")
+value = 80.0
+show_percentage = false
+script = ExtResource("1_dbtmm")
+
+[connection signal="value_changed" from="SubViewport/ProgressBar" to="SubViewport/ProgressBar" method="_on_value_changed"]

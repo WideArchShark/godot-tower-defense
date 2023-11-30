@@ -1,10 +1,11 @@
-[gd_scene load_steps=13 format=3 uid="uid://bdh0cqv4kt8t8"]
+[gd_scene load_steps=17 format=3 uid="uid://bdh0cqv4kt8t8"]
 
 [ext_resource type="Script" path="res://scripts/basic_enemy.gd" id="1_x18ab"]
 [ext_resource type="Script" path="res://addons/godot_state_charts/state_chart.gd" id="2_5wlrk"]
 [ext_resource type="Script" path="res://addons/godot_state_charts/compound_state.gd" id="3_ah54x"]
 [ext_resource type="Script" path="res://addons/godot_state_charts/atomic_state.gd" id="4_oaeau"]
 [ext_resource type="Script" path="res://addons/godot_state_charts/transition.gd" id="5_2ibju"]
+[ext_resource type="Script" path="res://scripts/progress_bar.gd" id="6_kj7um"]
 [ext_resource type="AudioStream" uid="uid://3i4mrdifi4k7" path="res://audio/explosion.mp3" id="7_xtq1q"]
 [ext_resource type="PackedScene" uid="uid://cgqgcdbbu4rwc" path="res://scenes/smoke.tscn" id="8_d2i56"]
 [ext_resource type="PackedScene" uid="uid://ctnksfkdnfrvl" path="res://scenes/explosion_particle.tscn" id="8_q3ul8"]
@@ -73,8 +74,18 @@ _data = {
 "spawn": SubResource("Animation_ayxcf")
 }
 
+[sub_resource type="ViewportTexture" id="ViewportTexture_o8hsp"]
+viewport_path = NodePath("HealthBar")
+
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_qn8pp"]
 height = 0.75
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_h337k"]
+bg_color = Color(0, 0, 0, 0.376471)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_oqljt"]
+resource_local_to_scene = true
+bg_color = Color(0, 0.67451, 0.768627, 1)
 
 [node name="Enemy01" type="Node3D"]
 script = ExtResource("1_x18ab")
@@ -145,8 +156,13 @@ script = ExtResource("4_oaeau")
 transform = Transform3D(0.999972, 0, 0, 0, 0.999989, 0, 0, 0, 0.999978, 0, 0, 0)
 
 [node name="Enemy" type="Node3D" parent="Path3D/PathFollow3D"]
-transform = Transform3D(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.2, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 0)
 visible = false
+
+[node name="Sprite3D" type="Sprite3D" parent="Path3D/PathFollow3D/Enemy"]
+transform = Transform3D(0.500014, 0, 0, 0, 0.500004, 0, 0, 0, 0.50001, 0, 0.745957, 0)
+billboard = 1
+texture = SubResource("ViewportTexture_o8hsp")
 
 [node name="Area3D" type="Area3D" parent="Path3D/PathFollow3D"]
 collision_layer = 2
@@ -166,6 +182,30 @@ transform = Transform3D(1, 0, 0, 0, 0.999999, 0, 0, 0, 0.999999, 0, 0.325, 0)
 stream = ExtResource("7_xtq1q")
 bus = &"FX"
 
+[node name="HealthBar" type="SubViewport" parent="."]
+transparent_bg = true
+handle_input_locally = false
+size = Vector2i(256, 64)
+render_target_update_mode = 4
+
+[node name="ProgressBar" type="ProgressBar" parent="HealthBar"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -64.0
+offset_top = -12.0
+offset_right = 64.0
+offset_bottom = 12.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_h337k")
+theme_override_styles/fill = SubResource("StyleBoxFlat_oqljt")
+value = 80.0
+show_percentage = false
+script = ExtResource("6_kj7um")
+
 [connection signal="state_entered" from="EnemyStateChart/CompoundState/Spawning" to="." method="_on_spawning_state_entered"]
 [connection signal="state_entered" from="EnemyStateChart/CompoundState/Travelling" to="." method="_on_travelling_state_entered"]
 [connection signal="state_processing" from="EnemyStateChart/CompoundState/Travelling" to="." method="_on_travelling_state_processing"]
@@ -174,3 +214,4 @@ bus = &"FX"
 [connection signal="state_entered" from="EnemyStateChart/CompoundState/Despawning" to="." method="_on_despawning_state_entered"]
 [connection signal="state_entered" from="EnemyStateChart/CompoundState/RemoveEnemy" to="." method="_on_remove_enemy_state_entered"]
 [connection signal="area_entered" from="Path3D/PathFollow3D/Area3D" to="." method="_on_area_3d_area_entered"]
+[connection signal="value_changed" from="HealthBar/ProgressBar" to="HealthBar/ProgressBar" method="_on_value_changed"]
