@@ -22,10 +22,16 @@ var RAYCAST_LENGTH:float = 100
 
 var current_wave_index:int = 0
 
+# NEW
+@export var cash:int = 100
+
 ## Assumes the path generator has finished, and adds the remaining tiles to fill in the grid.
 func _ready():
 	_complete_grid()
-	#_spawn_wave()
+
+#NEW
+func _process(_delta):
+	$Control/CashLabel.text = "Cash $%d" % cash
 
 func _spawn_wave():
 	var enemy_wave:Array[EnemySettings] = enemy_waves[current_wave_index].enemies

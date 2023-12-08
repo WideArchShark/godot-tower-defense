@@ -66,6 +66,7 @@ func _on_dying_state_entered():
 	enemy_finished.emit()
 	$Path3D/PathFollow3D/Smoke.emitting = true
 	$Path3D/PathFollow3D/Explosion.emitting = true
+	get_parent_node_3d().cash += enemy_settings.value
 
 	$ExplosionAudio.play()
 	#$Path3D/PathFollow3D/enemy_ufoRed2.visible = false

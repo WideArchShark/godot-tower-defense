@@ -2,6 +2,10 @@ extends Button
 
 @export var activity_button_icon:Texture2D
 @export var activity_draggable:PackedScene
+@onready var main = $"../.."
+
+#NEW
+@export var cost:int = 100
 
 var _is_dragging:bool = false
 var _draggable:Node
@@ -20,6 +24,10 @@ func _ready():
 	_draggable.visible = false
 	_cam = get_viewport().get_camera_3d()
 
+# NEW
+func _process(_delta):
+	disabled = main.cash < cost
+	
 func _physics_process(_delta):
 	if _is_dragging:
 		var space_state = _draggable.get_world_3d().direct_space_state
@@ -85,3 +93,4 @@ func _on_button_up():
 		var activity = activity_draggable.instantiate()
 		add_child(activity)
 		activity.global_position = _last_valid_location
+		main.cash -= cost  # NEW
