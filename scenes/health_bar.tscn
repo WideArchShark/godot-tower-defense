@@ -6,7 +6,6 @@
 bg_color = Color(0, 0, 0, 0.376471)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_oqljt"]
-resource_local_to_scene = true
 bg_color = Color(0, 0.67451, 0.768627, 1)
 
 [node name="HealthBar" type="SubViewportContainer"]
